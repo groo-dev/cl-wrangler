@@ -46,6 +46,8 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.NEW_VERSION }}
 
     steps:
       - uses: actions/checkout@v4
@@ -105,6 +107,14 @@ jobs:
           # Strip cli- prefix for goreleaser (monorepo feature is Pro-only)
           GORELEASER_CURRENT_TAG: v${{ steps.bump.outputs.NEW_VERSION }}
 
+  publish-npm:
+    name: Publish to npm
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -114,7 +124,7 @@ jobs:
       - name: Publish to npm
         run: |
           cd npm
-          VERSION=${{ steps.bump.outputs.NEW_VERSION }}
+          VERSION=${{ needs.release.outputs.version }}
 
           # Update package.json version
           sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
@@ -125,11 +135,16 @@ jobs:
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          CL_VERSION: ${{ steps.bump.outputs.NEW_VERSION }}
 
+  publish-homebrew:
+    name: Publish to Homebrew
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Update Homebrew tap
         run: |
-          VERSION=${{ steps.bump.outputs.NEW_VERSION }}
+          VERSION=${{ needs.release.outputs.version }}
           TAG="cli-v$VERSION"
 
           # Download release archives and calculate SHA256
@@ -153,48 +168,52 @@ jobs:
 
           mkdir -p Formula
 
-          # Generate formula
-          cat > Formula/cl.rb << EOF
-          class Cl < Formula
-            desc "Switch between multiple Cloudflare/Wrangler accounts"
-            homepage "https://github.com/groo-dev/cl-wranger"
-            version "$VERSION"
-            license "MIT"
+          # Generate formula content
+          FORMULA_CONTENT="class Cl < Formula
+            desc \"Switch between multiple Cloudflare/Wrangler accounts\"
+            homepage \"https://github.com/groo-dev/cl-wranger\"
+            version \"$VERSION\"
+            license \"MIT\"
 
             on_macos do
               on_arm do
-                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz"
-                sha256 "$SHA_DARWIN_ARM64"
+                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz\"
+                sha256 \"$SHA_DARWIN_ARM64\"
               end
               on_intel do
-                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz"
-                sha256 "$SHA_DARWIN_AMD64"
+                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz\"
+                sha256 \"$SHA_DARWIN_AMD64\"
               end
             end
 
             on_linux do
               on_arm do
-                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz"
-                sha256 "$SHA_LINUX_ARM64"
+                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz\"
+                sha256 \"$SHA_LINUX_ARM64\"
               end
               on_intel do
-                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz"
-                sha256 "$SHA_LINUX_AMD64"
+                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz\"
+                sha256 \"$SHA_LINUX_AMD64\"
               end
             end
 
             def install
-              bin.install "cl"
+              bin.install \"cl\"
             end
 
             test do
-              system "#{bin}/cl", "version"
+              system \"#{bin}/cl\", \"version\"
             end
-          end
-          EOF
+          end"
+
+          # Create latest formula
+          echo "$FORMULA_CONTENT" > Formula/cl.rb
+
+          # Create versioned formula (cl@0.1.7.rb)
+          echo "$FORMULA_CONTENT" > "Formula/cl@$VERSION.rb"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/cl.rb
+          git add Formula/
           git commit -m "Update cl to $VERSION"
           git push
