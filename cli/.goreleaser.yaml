@@ -1,0 +1,52 @@
+version: 2
+
+project_name: cl
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: cl
+    main: .
+    binary: cl
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/groo-dev/cl-wranger/cli/cmd.Version={{.Version}}
+
+archives:
+  - id: cl
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+release:
+  github:
+    owner: groo-dev
+    name: cl-wranger
+  name_template: "CLI v{{.Version}}"
+  prerelease: auto

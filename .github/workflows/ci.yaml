@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cli/**"
+      - ".github/workflows/ci.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "cli/**"
+      - ".github/workflows/ci.yaml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build CLI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cli
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: cli/go.sum
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build
+        run: go build -v -o cl .
+
+      - name: Verify binary
+        run: ./cl version
+
+  release:
+    name: Release
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: cli/go.sum
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump patch version
+        id: bump
+        run: |
+          cd cli
+          CURRENT=$(cat VERSION | tr -d '\n')
+
+          # Split version into parts
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+          # Increment patch
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+          echo "Current version: $CURRENT"
+          echo "New version: $NEW_VERSION"
+
+          # Update VERSION file
+          echo "$NEW_VERSION" > VERSION
+
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit and tag
+        run: |
+          git add cli/VERSION
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.NEW_VERSION }}"
+          git tag "cli-v${{ steps.bump.outputs.NEW_VERSION }}"
+          git push origin main --tags
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: latest
+          # --skip=validate: skip git tag validation (we use cli-v* prefixed tags)
+          args: release --clean --skip=validate
+          workdir: cli
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Strip cli- prefix for goreleaser (monorepo feature is Pro-only)
+          GORELEASER_CURRENT_TAG: v${{ steps.bump.outputs.NEW_VERSION }}
