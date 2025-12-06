@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
-	"github.com/groo-dev/cl-wranger/cli/internal/config"
-	"github.com/groo-dev/cl-wranger/cli/internal/store"
+	"github.com/groo-dev/cl-wrangler/cli/internal/config"
+	"github.com/groo-dev/cl-wrangler/cli/internal/store"
 	"github.com/spf13/cobra"
 )
 

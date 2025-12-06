@@ -7,7 +7,7 @@ import (
 )
 
 // Version follows semantic versioning (https://semver.org)
-// Set via ldflags: -ldflags "-X github.com/groo-dev/cl-wranger/cli/cmd.Version=1.0.0"
+// Set via ldflags: -ldflags "-X github.com/groo-dev/cl-wrangler/cli/cmd.Version=1.0.0"
 var Version = "0.1.0"
 
 var versionCmd = &cobra.Command{

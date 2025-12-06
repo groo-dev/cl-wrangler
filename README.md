@@ -26,27 +26,27 @@ npm install -g @groo.dev/cl-wrangler
 
 ### From Releases
 
-Download the latest binary from [Releases](https://github.com/groo-dev/cl-wranger/releases):
+Download the latest binary from [Releases](https://github.com/groo-dev/cl-wrangler/releases):
 
 ```bash
 # macOS (Apple Silicon)
-curl -L https://github.com/groo-dev/cl-wranger/releases/latest/download/cl_darwin_arm64.tar.gz | tar xz
+curl -L https://github.com/groo-dev/cl-wrangler/releases/latest/download/cl_darwin_arm64.tar.gz | tar xz
 sudo mv cl /usr/local/bin/
 
 # macOS (Intel)
-curl -L https://github.com/groo-dev/cl-wranger/releases/latest/download/cl_darwin_amd64.tar.gz | tar xz
+curl -L https://github.com/groo-dev/cl-wrangler/releases/latest/download/cl_darwin_amd64.tar.gz | tar xz
 sudo mv cl /usr/local/bin/
 
 # Linux (amd64)
-curl -L https://github.com/groo-dev/cl-wranger/releases/latest/download/cl_linux_amd64.tar.gz | tar xz
+curl -L https://github.com/groo-dev/cl-wrangler/releases/latest/download/cl_linux_amd64.tar.gz | tar xz
 sudo mv cl /usr/local/bin/
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/groo-dev/cl-wranger.git
-cd cl-wranger/cli
+git clone https://github.com/groo-dev/cl-wrangler.git
+cd cl-wrangler/cli
 go build -o cl
 sudo mv cl /usr/local/bin/
 ```

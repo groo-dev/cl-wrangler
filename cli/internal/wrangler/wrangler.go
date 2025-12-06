@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
-	"github.com/groo-dev/cl-wranger/cli/internal/store"
+	"github.com/groo-dev/cl-wrangler/cli/internal/store"
 )
 
 type WhoamiInfo struct {

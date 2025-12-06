@@ -5,7 +5,7 @@ const https = require('https');
 const { execSync } = require('child_process');
 
 const VERSION = process.env.CL_VERSION || '0.0.0';
-const REPO = 'groo-dev/cl-wranger';
+const REPO = 'groo-dev/cl-wrangler';
 
 const PLATFORMS = {
   'darwin-x64': 'cl_darwin_amd64.tar.gz',
@@ -21,7 +21,7 @@ const archive = PLATFORMS[platform];
 
 if (!archive) {
   console.error(`Unsupported platform: ${platform}`);
-  console.error('Please install manually from: https://github.com/groo-dev/cl-wranger/releases');
+  console.error('Please install manually from: https://github.com/groo-dev/cl-wrangler/releases');
   process.exit(1);
 }
 
@@ -86,7 +86,7 @@ async function main() {
     console.log(`cl v${VERSION} installed successfully!`);
   } catch (err) {
     console.error('Failed to install cl:', err.message);
-    console.error('Please install manually from: https://github.com/groo-dev/cl-wranger/releases');
+    console.error('Please install manually from: https://github.com/groo-dev/cl-wrangler/releases');
     process.exit(1);
   } finally {
     // Cleanup temp files

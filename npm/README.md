@@ -37,7 +37,7 @@ cl remove
 
 ## More Info
 
-For full documentation, see the [GitHub repository](https://github.com/groo-dev/cl-wranger).
+For full documentation, see the [GitHub repository](https://github.com/groo-dev/cl-wrangler).
 
 ## License
 

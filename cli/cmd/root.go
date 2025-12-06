@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/groo-dev/cl-wranger/cli/internal/store"
-	"github.com/groo-dev/cl-wranger/cli/internal/update"
+	"github.com/groo-dev/cl-wrangler/cli/internal/store"
+	"github.com/groo-dev/cl-wrangler/cli/internal/update"
 	"github.com/spf13/cobra"
 )
 

@@ -151,10 +151,10 @@ jobs:
           mkdir -p /tmp/releases
           cd /tmp/releases
 
-          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz" -o darwin_arm64.tar.gz
-          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz" -o darwin_amd64.tar.gz
-          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz" -o linux_arm64.tar.gz
-          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz" -o linux_amd64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_darwin_arm64.tar.gz" -o darwin_arm64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_darwin_amd64.tar.gz" -o darwin_amd64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_linux_arm64.tar.gz" -o linux_arm64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_linux_amd64.tar.gz" -o linux_amd64.tar.gz
 
           SHA_DARWIN_ARM64=$(sha256sum darwin_arm64.tar.gz | cut -d' ' -f1)
           SHA_DARWIN_AMD64=$(sha256sum darwin_amd64.tar.gz | cut -d' ' -f1)
@@ -171,28 +171,28 @@ jobs:
           # Generate formula content
           FORMULA_CONTENT="class Cl < Formula
             desc \"Switch between multiple Cloudflare/Wrangler accounts\"
-            homepage \"https://github.com/groo-dev/cl-wranger\"
+            homepage \"https://github.com/groo-dev/cl-wrangler\"
             version \"$VERSION\"
             license \"MIT\"
 
             on_macos do
               on_arm do
-                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz\"
+                url \"https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_darwin_arm64.tar.gz\"
                 sha256 \"$SHA_DARWIN_ARM64\"
               end
               on_intel do
-                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz\"
+                url \"https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_darwin_amd64.tar.gz\"
                 sha256 \"$SHA_DARWIN_AMD64\"
               end
             end
 
             on_linux do
               on_arm do
-                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz\"
+                url \"https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_linux_arm64.tar.gz\"
                 sha256 \"$SHA_LINUX_ARM64\"
               end
               on_intel do
-                url \"https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz\"
+                url \"https://github.com/groo-dev/cl-wrangler/releases/download/$TAG/cl_linux_amd64.tar.gz\"
                 sha256 \"$SHA_LINUX_AMD64\"
               end
             end

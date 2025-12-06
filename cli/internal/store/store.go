@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/groo-dev/cl-wranger/cli/internal/config"
+	"github.com/groo-dev/cl-wrangler/cli/internal/config"
 )
 
 type Account struct {

@@ -12,7 +12,7 @@ import (
 
 const (
 	repoOwner     = "groo-dev"
-	repoName      = "cl-wranger"
+	repoName      = "cl-wrangler"
 	checkInterval = 24 * time.Hour
 	versionFile   = "cli/VERSION"
 )

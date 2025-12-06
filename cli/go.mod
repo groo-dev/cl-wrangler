@@ -1,4 +1,4 @@
-module github.com/groo-dev/cl-wranger/cli
+module github.com/groo-dev/cl-wrangler/cli
 
 go 1.25.5
 

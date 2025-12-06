@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/groo-dev/cl-wranger.git"
+    "url": "https://github.com/groo-dev/cl-wrangler.git"
   },
   "keywords": [
     "cloudflare",
@@ -22,9 +22,9 @@
   "author": "groo-dev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/groo-dev/cl-wranger/issues"
+    "url": "https://github.com/groo-dev/cl-wrangler/issues"
   },
-  "homepage": "https://github.com/groo-dev/cl-wranger#readme",
+  "homepage": "https://github.com/groo-dev/cl-wrangler#readme",
   "engines": {
     "node": ">=14"
   }

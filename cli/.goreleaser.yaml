@@ -21,7 +21,7 @@ builds:
       - arm64
     ldflags:
       - -s -w
-      - -X github.com/groo-dev/cl-wranger/cli/cmd.Version={{.Version}}
+      - -X github.com/groo-dev/cl-wrangler/cli/cmd.Version={{.Version}}
 
 archives:
   - id: cl
@@ -47,6 +47,6 @@ changelog:
 release:
   github:
     owner: groo-dev
-    name: cl-wranger
+    name: cl-wrangler
   name_template: "CLI v{{.Version}}"
   prerelease: auto
