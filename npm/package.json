@@ -1,0 +1,31 @@
+{
+  "name": "@groo.dev/cl-wrangler",
+  "version": "0.0.0",
+  "description": "Switch between multiple Cloudflare/Wrangler accounts",
+  "bin": {
+    "cl": "bin/cl.js"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groo-dev/cl-wranger.git"
+  },
+  "keywords": [
+    "cloudflare",
+    "wrangler",
+    "account",
+    "switch",
+    "cli"
+  ],
+  "author": "groo-dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/groo-dev/cl-wranger/issues"
+  },
+  "homepage": "https://github.com/groo-dev/cl-wranger#readme",
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -104,3 +104,97 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Strip cli- prefix for goreleaser (monorepo feature is Pro-only)
           GORELEASER_CURRENT_TAG: v${{ steps.bump.outputs.NEW_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish to npm
+        run: |
+          cd npm
+          VERSION=${{ steps.bump.outputs.NEW_VERSION }}
+
+          # Update package.json version
+          sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
+
+          # Update VERSION in install.js
+          sed -i "s/const VERSION = .*/const VERSION = process.env.CL_VERSION || '$VERSION';/" install.js
+
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CL_VERSION: ${{ steps.bump.outputs.NEW_VERSION }}
+
+      - name: Update Homebrew tap
+        run: |
+          VERSION=${{ steps.bump.outputs.NEW_VERSION }}
+          TAG="cli-v$VERSION"
+
+          # Download release archives and calculate SHA256
+          mkdir -p /tmp/releases
+          cd /tmp/releases
+
+          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz" -o darwin_arm64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz" -o darwin_amd64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz" -o linux_arm64.tar.gz
+          curl -sL "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz" -o linux_amd64.tar.gz
+
+          SHA_DARWIN_ARM64=$(sha256sum darwin_arm64.tar.gz | cut -d' ' -f1)
+          SHA_DARWIN_AMD64=$(sha256sum darwin_amd64.tar.gz | cut -d' ' -f1)
+          SHA_LINUX_ARM64=$(sha256sum linux_arm64.tar.gz | cut -d' ' -f1)
+          SHA_LINUX_AMD64=$(sha256sum linux_amd64.tar.gz | cut -d' ' -f1)
+
+          # Clone homebrew tap
+          cd /tmp
+          git clone https://x-access-token:${{ secrets.HOMEBREW_TAP_TOKEN }}@github.com/groo-dev/homebrew-tap.git
+          cd homebrew-tap
+
+          mkdir -p Formula
+
+          # Generate formula
+          cat > Formula/cl.rb << EOF
+          class Cl < Formula
+            desc "Switch between multiple Cloudflare/Wrangler accounts"
+            homepage "https://github.com/groo-dev/cl-wranger"
+            version "$VERSION"
+            license "MIT"
+
+            on_macos do
+              on_arm do
+                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_arm64.tar.gz"
+                sha256 "$SHA_DARWIN_ARM64"
+              end
+              on_intel do
+                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_darwin_amd64.tar.gz"
+                sha256 "$SHA_DARWIN_AMD64"
+              end
+            end
+
+            on_linux do
+              on_arm do
+                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_arm64.tar.gz"
+                sha256 "$SHA_LINUX_ARM64"
+              end
+              on_intel do
+                url "https://github.com/groo-dev/cl-wranger/releases/download/$TAG/cl_linux_amd64.tar.gz"
+                sha256 "$SHA_LINUX_AMD64"
+              end
+            end
+
+            def install
+              bin.install "cl"
+            end
+
+            test do
+              system "#{bin}/cl", "version"
+            end
+          end
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/cl.rb
+          git commit -m "Update cl to $VERSION"
+          git push

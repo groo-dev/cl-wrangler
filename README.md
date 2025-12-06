@@ -12,7 +12,19 @@ A CLI tool to easily switch between multiple Cloudflare/Wrangler accounts.
 
 ## Installation
 
-### From Releases (Recommended)
+### Homebrew (macOS/Linux)
+
+```bash
+brew install groo-dev/tap/cl
+```
+
+### npm
+
+```bash
+npm install -g @groo.dev/cl-wrangler
+```
+
+### From Releases
 
 Download the latest binary from [Releases](https://github.com/groo-dev/cl-wranger/releases):
 
