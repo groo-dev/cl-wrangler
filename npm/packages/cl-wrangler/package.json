@@ -19,7 +19,7 @@
     "switch",
     "cli"
   ],
-  "author": "groo-dev",
+  "author": "groo.dev",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/groo-dev/cl-wrangler/issues"
@@ -27,5 +27,13 @@
   "homepage": "https://cl-wrangler.groo.dev",
   "engines": {
     "node": ">=14"
+  },
+  "optionalDependencies": {
+    "@groo.dev/cl-wrangler-darwin-arm64": "0.0.0",
+    "@groo.dev/cl-wrangler-darwin-x64": "0.0.0",
+    "@groo.dev/cl-wrangler-linux-arm64": "0.0.0",
+    "@groo.dev/cl-wrangler-linux-x64": "0.0.0",
+    "@groo.dev/cl-wrangler-win32-arm64": "0.0.0",
+    "@groo.dev/cl-wrangler-win32-x64": "0.0.0"
   }
 }

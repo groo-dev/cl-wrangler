@@ -1,0 +1,14 @@
+{
+  "name": "@groo.dev/cl-wrangler-linux-arm64",
+  "version": "0.0.0",
+  "description": "Platform-specific binary for cl-wrangler (Linux ARM64)",
+  "os": ["linux"],
+  "cpu": ["arm64"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groo-dev/cl-wrangler.git"
+  },
+  "author": "groo.dev",
+  "license": "MIT",
+  "preferUnplugged": true
+}

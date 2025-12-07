@@ -1,6 +1,8 @@
 # cl - CLI
 
-This is the Go source code for the `cl` CLI tool.
+Go source code for the `cl` CLI tool.
+
+See [cl-wrangler.groo.dev](https://cl-wrangler.groo.dev) for documentation.
 
 ## Development
 

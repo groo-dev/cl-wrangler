@@ -1,0 +1,14 @@
+{
+  "name": "@groo.dev/cl-wrangler-darwin-x64",
+  "version": "0.0.0",
+  "description": "Platform-specific binary for cl-wrangler (macOS x64)",
+  "os": ["darwin"],
+  "cpu": ["x64"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groo-dev/cl-wrangler.git"
+  },
+  "author": "groo.dev",
+  "license": "MIT",
+  "preferUnplugged": true
+}

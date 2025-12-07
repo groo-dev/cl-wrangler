@@ -1,4 +1,0 @@
-# Downloaded binaries (installed via postinstall)
-bin/cl
-bin/cl.exe
-node_modules/
