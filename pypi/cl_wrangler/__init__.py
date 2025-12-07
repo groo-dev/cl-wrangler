@@ -64,7 +64,7 @@ def download_binary():
     else:
         archive_name = f"cl_{os_name}_{arch}.tar.gz"
 
-    url = f"https://github.com/{REPO}/releases/download/cli-v{__version__}/{archive_name}"
+    url = f"https://github.com/{REPO}/releases/download/v{__version__}/{archive_name}"
 
     print(f"Downloading cl v{__version__} for {os_name}/{arch}...")
 

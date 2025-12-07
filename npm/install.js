@@ -25,7 +25,7 @@ if (!archive) {
   process.exit(1);
 }
 
-const url = `https://github.com/${REPO}/releases/download/cli-v${VERSION}/${archive}`;
+const url = `https://github.com/${REPO}/releases/download/v${VERSION}/${archive}`;
 const binDir = path.join(__dirname, 'bin');
 const binName = os.platform() === 'win32' ? 'cl.exe' : 'cl';
 const binPath = path.join(binDir, binName);
