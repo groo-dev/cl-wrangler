@@ -9,7 +9,7 @@ description = "Switch between multiple Cloudflare/Wrangler accounts"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Groo Dev", email = "pypi@groo.dev"}
+    {name = "groo.dev"}
 ]
 keywords = ["cloudflare", "wrangler", "cli", "account-switcher"]
 classifiers = [
