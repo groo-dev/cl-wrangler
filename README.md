@@ -2,6 +2,8 @@
 
 A CLI tool to easily switch between multiple Cloudflare/Wrangler accounts.
 
+**[Documentation](https://cl-wrangler.groo.dev)**
+
 ## Features
 
 - **Save accounts** - Store multiple Wrangler authentication configs

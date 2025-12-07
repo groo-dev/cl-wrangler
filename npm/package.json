@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/groo-dev/cl-wrangler/issues"
   },
-  "homepage": "https://github.com/groo-dev/cl-wrangler#readme",
+  "homepage": "https://cl-wrangler.groo.dev",
   "engines": {
     "node": ">=14"
   }
