@@ -1,4 +1,4 @@
-# cl - CLI
+# cl
 
 Go source code for the `cl` CLI tool.
 
