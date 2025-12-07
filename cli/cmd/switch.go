@@ -13,7 +13,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const addNewAccountOption = "__add_new__"
+const (
+	addNewAccountOption = "__add_new__"
+	deleteAccountOption = "__delete__"
+	backOption          = "__back__"
+)
 
 var switchCmd = &cobra.Command{
 	Use:   "switch [account-name-or-id]",
@@ -64,9 +68,12 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		// Handle "Add new account" option
+		// Handle special options
 		if targetID == addNewAccountOption {
 			return addNewAccount(db)
+		}
+		if targetID == deleteAccountOption {
+			return deleteAccountInteractive(db)
 		}
 	} else {
 		if len(db.Accounts) == 0 {
@@ -112,21 +119,25 @@ func selectAccountInteractive(db *store.AccountsDB) (string, error) {
 	var options []huh.Option[string]
 
 	for _, acc := range db.Accounts {
-		label := fmt.Sprintf("%s (%s)", acc.Name, acc.Email)
+		label := fmt.Sprintf("  %s (%s)", acc.Name, acc.Email)
 		if acc.ID == db.Current {
-			label = fmt.Sprintf("%s (%s) [current]", acc.Name, acc.Email)
+			label = fmt.Sprintf("✓ %s (%s)", acc.Name, acc.Email)
 		}
 		options = append(options, huh.NewOption(label, acc.ID))
 	}
 
-	// Add "Login with new account" option
-	options = append(options, huh.NewOption("+ Login with new account", addNewAccountOption))
+	// Add action options
+	options = append(options, huh.NewOption("+ Add new account", addNewAccountOption))
+	if len(db.Accounts) > 0 {
+		options = append(options, huh.NewOption("× Remove account", deleteAccountOption))
+	}
 
 	var selected string
 	err := huh.NewSelect[string]().
-		Title("Select account:").
+		Title("Select account").
 		Options(options...).
 		Value(&selected).
+		WithTheme(huh.ThemeCatppuccin()).
 		Run()
 
 	if err != nil {
@@ -191,6 +202,82 @@ func addNewAccount(db *store.AccountsDB) error {
 	}
 
 	color.Green("✓ Logged in and saved: %s (%s)", info.AccountName, info.Email)
+
+	return nil
+}
+
+func deleteAccountInteractive(db *store.AccountsDB) error {
+	if len(db.Accounts) == 0 {
+		return fmt.Errorf("no accounts to remove")
+	}
+
+	// Select account to delete
+	var options []huh.Option[string]
+	options = append(options, huh.NewOption("← Back", backOption))
+	for _, acc := range db.Accounts {
+		label := fmt.Sprintf("%s (%s)", acc.Name, acc.Email)
+		if acc.ID == db.Current {
+			label = fmt.Sprintf("%s (%s) [current]", acc.Name, acc.Email)
+		}
+		options = append(options, huh.NewOption(label, acc.ID))
+	}
+
+	var selectedID string
+	err := huh.NewSelect[string]().
+		Title("Select account to remove").
+		Options(options...).
+		Value(&selectedID).
+		WithTheme(huh.ThemeCatppuccin()).
+		Run()
+
+	if err != nil {
+		return err
+	}
+
+	// Handle back option - return to main menu
+	if selectedID == backOption {
+		return runSwitch(nil, nil)
+	}
+
+	acc := db.GetAccount(selectedID)
+	if acc == nil {
+		return fmt.Errorf("account not found")
+	}
+
+	// Confirm deletion
+	var confirm bool
+	err = huh.NewConfirm().
+		Title(fmt.Sprintf("Remove %s (%s)?", acc.Name, acc.Email)).
+		Affirmative("Yes").
+		Negative("No").
+		Value(&confirm).
+		WithTheme(huh.ThemeCatppuccin()).
+		Run()
+
+	if err != nil {
+		return err
+	}
+
+	if !confirm {
+		fmt.Println("Cancelled")
+		return nil
+	}
+
+	// Remove the account
+	if err := store.DeleteAccountConfig(selectedID); err != nil {
+		return fmt.Errorf("failed to remove account config: %w", err)
+	}
+
+	db.RemoveAccount(selectedID)
+	if db.Current == selectedID {
+		db.Current = ""
+	}
+
+	if err := store.SaveDB(db); err != nil {
+		return fmt.Errorf("failed to save database: %w", err)
+	}
+
+	color.Green("✓ Removed: %s (%s)", acc.Name, acc.Email)
 
 	return nil
 }

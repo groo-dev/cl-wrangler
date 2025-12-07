@@ -51,72 +51,57 @@ go build -o cl
 sudo mv cl /usr/local/bin/
 ```
 
+## Quick Start
+
+```bash
+# Save your current wrangler account
+cl add
+
+# Switch between accounts (interactive menu)
+cl switch
+```
+
 ## Usage
 
-### Save your current account
+### `cl switch` - The main command
+
+Run `cl switch` to open an interactive menu where you can:
+- **Switch** to any saved account
+- **Login** with a new account
+- **Remove** an account you no longer need
 
 ```bash
-cl add
-```
-
-This saves your current Wrangler authentication and marks it as the active account.
-
-### List saved accounts
-
-```bash
-cl list
-```
-
-Shows all saved accounts with the current one marked.
-
-### Switch accounts
-
-```bash
-# Interactive mode - shows a list to choose from
 cl switch
-
-# Fuzzy match - switch by name or ID
-cl switch hamid
-cl switch work
 ```
 
-### Add a new account
+```
+? Select account:
+  > HamidRaza (hamid@example.com) [current]
+    WorkAccount (work@company.com)
+    ClientProject (client@example.com)
+  ────────────────
+    + Login with new account
+    - Remove an account
+```
+
+You can also switch directly with fuzzy matching:
 
 ```bash
-# From the switch menu, select "+ Login with new account"
-cl switch
-
-# Or use wrangler directly, then save
-wrangler login
-cl add
+cl switch hamid    # Fuzzy match by name
+cl switch work     # Partial match works too
 ```
 
-### Remove an account
+### Other commands
 
-```bash
-cl remove        # Interactive selection
-cl remove work   # Fuzzy match
-```
-
-### Logout
-
-```bash
-cl logout
-```
-
-Runs `wrangler logout` and removes the account from saved accounts.
-
-### View/Edit config
-
-```bash
-cl config
-```
-
-### Check version
-
-```bash
-cl version
-```
+| Command | Description |
+|---------|-------------|
+| `cl add` | Save current wrangler account |
+| `cl list` | List all saved accounts |
+| `cl current` | Show current account |
+| `cl remove` | Remove an account (also available in `cl switch`) |
+| `cl logout` | Logout and remove current account |
+| `cl config` | View/edit configuration |
+| `cl version` | Show version |
 
 ## Shell Completions
 
