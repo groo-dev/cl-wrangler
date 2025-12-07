@@ -24,6 +24,12 @@ brew install groo-dev/tap/cl
 npm install -g @groo.dev/cl-wrangler
 ```
 
+### pip
+
+```bash
+pip install cl-wrangler
+```
+
 ### From Releases
 
 Download the latest binary from [Releases](https://github.com/groo-dev/cl-wrangler/releases):
