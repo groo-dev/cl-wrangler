@@ -47,13 +47,12 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.bump.outputs.NEW_VERSION }}
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -61,51 +60,39 @@ jobs:
           go-version: "1.23"
           cache-dependency-path: cli/go.sum
 
-      - name: Configure git
+      - name: Get next version
+        id: version
+        uses: groo-dev/record-release@v1
+        with:
+          token: groo_b310854d80189784e3ed222a5860562f992587bf8b1f34d6677d0c1857812461
+          environment: production
+          bump: patch
+          dry-run: true
+
+      - name: Create tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump patch version
-        id: bump
-        run: |
-          cd cli
-          CURRENT=$(cat VERSION | tr -d '\n')
-
-          # Split version into parts
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
-
-          # Increment patch
-          NEW_PATCH=$((PATCH + 1))
-          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-
-          echo "Current version: $CURRENT"
-          echo "New version: $NEW_VERSION"
-
-          # Update VERSION file
-          echo "$NEW_VERSION" > VERSION
-
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Commit and tag
-        run: |
-          git add cli/VERSION
-          git commit -m "chore: bump version to ${{ steps.bump.outputs.NEW_VERSION }}"
-          git tag "cli-v${{ steps.bump.outputs.NEW_VERSION }}"
-          git push origin main --tags
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
-          # --skip=validate: skip git tag validation (we use cli-v* prefixed tags)
           args: release --clean --skip=validate
           workdir: cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Strip cli- prefix for goreleaser (monorepo feature is Pro-only)
-          GORELEASER_CURRENT_TAG: v${{ steps.bump.outputs.NEW_VERSION }}
+          GORELEASER_CURRENT_TAG: v${{ steps.version.outputs.version }}
+
+      - name: Record release
+        uses: groo-dev/record-release@v1
+        with:
+          token: groo_b310854d80189784e3ed222a5860562f992587bf8b1f34d6677d0c1857812461
+          environment: production
+          version: ${{ steps.version.outputs.version }}
 
   publish-npm-platform:
     name: Publish npm (${{ matrix.platform }})
@@ -232,7 +219,7 @@ jobs:
       - name: Update Homebrew tap
         run: |
           VERSION=${{ needs.release.outputs.version }}
-          TAG="cli-v$VERSION"
+          TAG="v$VERSION"
 
           # Download release archives and calculate SHA256
           mkdir -p /tmp/releases

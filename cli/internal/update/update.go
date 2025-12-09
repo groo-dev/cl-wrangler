@@ -1,10 +1,9 @@
 package update
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/Masterminds/semver/v3"
@@ -14,35 +13,44 @@ const (
 	repoOwner     = "groo-dev"
 	repoName      = "cl-wrangler"
 	checkInterval = 24 * time.Hour
-	versionFile   = "cli/VERSION"
+	versionAPI    = "https://ops.groo.dev/v1/webhook/version?environment=production"
+	apiToken      = "groo_b310854d80189784e3ed222a5860562f992587bf8b1f34d6677d0c1857812461"
 )
 
-// CheckForUpdate checks GitHub for a newer version
+type versionResponse struct {
+	Version string `json:"version"`
+}
+
+// CheckForUpdate checks for a newer version
 // Returns (newVersion, downloadURL, error)
 func CheckForUpdate(currentVersion string) (string, string, error) {
-	// Fetch VERSION file from repo
-	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/%s", repoOwner, repoName, versionFile)
-
 	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(url)
+
+	req, err := http.NewRequest("GET", versionAPI, nil)
+	if err != nil {
+		return "", "", err
+	}
+	req.Header.Set("Authorization", "Bearer "+apiToken)
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return "", "", fmt.Errorf("failed to fetch VERSION file: status %d", resp.StatusCode)
+		return "", "", fmt.Errorf("failed to fetch version: status %d", resp.StatusCode)
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
+	var versionResp versionResponse
+	if err := json.NewDecoder(resp.Body).Decode(&versionResp); err != nil {
 		return "", "", err
 	}
 
-	latestVersion := strings.TrimSpace(string(body))
+	latestVersion := versionResp.Version
 
 	if isNewerVersion(latestVersion, currentVersion) {
-		releaseURL := fmt.Sprintf("https://github.com/%s/%s/releases/tag/cli-v%s", repoOwner, repoName, latestVersion)
+		releaseURL := fmt.Sprintf("https://github.com/%s/%s/releases/tag/v%s", repoOwner, repoName, latestVersion)
 		return latestVersion, releaseURL, nil
 	}
 

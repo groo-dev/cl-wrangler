@@ -22,7 +22,7 @@ cli/
 ├── cmd/          # Cobra commands
 ├── internal/
 │   ├── store/    # Account storage and config management
+│   ├── update/   # Version check
 │   └── wrangler/ # Wrangler CLI integration
-├── main.go       # Entry point
-└── VERSION       # Current version
+└── main.go       # Entry point
 ```
