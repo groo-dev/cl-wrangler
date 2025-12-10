@@ -64,7 +64,7 @@ jobs:
         id: version
         uses: groo-dev/record-release@v1
         with:
-          token: groo_b310854d80189784e3ed222a5860562f992587bf8b1f34d6677d0c1857812461
+          token: ${{ secrets.OPS_API_TOKEN }}
           environment: production
           bump: patch
           dry-run: true
@@ -90,7 +90,7 @@ jobs:
       - name: Record release
         uses: groo-dev/record-release@v1
         with:
-          token: groo_b310854d80189784e3ed222a5860562f992587bf8b1f34d6677d0c1857812461
+          token: ${{ secrets.OPS_API_TOKEN }}
           environment: production
           version: ${{ steps.version.outputs.version }}
 
