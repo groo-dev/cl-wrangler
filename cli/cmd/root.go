@@ -12,9 +12,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "cl",
-	Short: "Cloudflare Wrangler account switcher",
-	Long:  `A CLI tool to easily switch between multiple Cloudflare/Wrangler accounts.`,
+	Use:     "cl",
+	Short:   "Cloudflare Wrangler account switcher",
+	Long:    `A CLI tool to easily switch between multiple Cloudflare/Wrangler accounts.`,
+	Version: Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Skip update check for version and completion commands
 		if cmd.Name() == "version" || cmd.Name() == "completion" {
