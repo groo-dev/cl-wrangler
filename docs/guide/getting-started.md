@@ -13,8 +13,10 @@ If you work with multiple Cloudflare accounts (personal projects, client work, d
 ## Quick Start
 
 ```bash
-# Install
-brew install groo-dev/tap/cl
+# Install (choose one)
+brew install groo-dev/tap/cl     # Homebrew
+npm install -g @groo.dev/cl-wrangler  # npm
+pip install cl-wrangler          # pip
 
 # Save your current account
 cl add

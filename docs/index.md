@@ -10,8 +10,8 @@ hero:
       text: Get Started
       link: /guide/getting-started
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/groo-dev/cl-wrangler
+      text: Installation
+      link: /guide/installation
 
 features:
   - title: Quick Switch
