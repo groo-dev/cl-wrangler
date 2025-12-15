@@ -2,7 +2,7 @@
 
 Go source code for the `cl` CLI tool.
 
-See [cl-wrangler.groo.dev](https://cl-wrangler.groo.dev) for documentation.
+See [docs.groo.dev/cl-wrangler](https://docs.groo.dev/cl-wrangler) for documentation.
 
 ## Development
 

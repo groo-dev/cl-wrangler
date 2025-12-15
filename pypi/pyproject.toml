@@ -30,8 +30,8 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.urls]
-Homepage = "https://cl-wrangler.groo.dev"
-Documentation = "https://cl-wrangler.groo.dev"
+Homepage = "https://docs.groo.dev/cl-wrangler"
+Documentation = "https://docs.groo.dev/cl-wrangler"
 Repository = "https://github.com/groo-dev/cl-wrangler"
 Issues = "https://github.com/groo-dev/cl-wrangler/issues"
 

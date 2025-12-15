@@ -23,7 +23,7 @@ cl switch work
 
 ## More Info
 
-For full documentation, visit [cl-wrangler.groo.dev](https://cl-wrangler.groo.dev).
+For full documentation, visit [docs.groo.dev/cl-wrangler](https://docs.groo.dev/cl-wrangler).
 
 ## License
 
