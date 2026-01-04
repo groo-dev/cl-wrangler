@@ -25,3 +25,6 @@ go.work.sum
 
 # Local config (don't commit test accounts)
 *.local
+
+# Groo CLI config
+.groo/
